@@ -17,6 +17,7 @@
 		</style>
 		<script>
 			var keynoteDate = new Date("2021-06-07T17:00:00Z");
+			var keynoteEndDate = new Date("2021-06-07T18:00:00Z");
 			function loaded() {
 				checkDate();
 				setTimeout(function() {
@@ -60,26 +61,46 @@
 					
 					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is in "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+".";
 				} else {
-					var diff = d-keynoteDate;
-					
-					var days = Math.floor(diff/(24*60*60*1000));
-					diff-=days*24*60*60*1000;
-					var hours = Math.floor(diff/(60*60*1000));
-					diff-=hours*60*60*1000;
-					var minutes = Math.floor(diff/(60*1000));
-					diff-=minutes*60*1000;
-					var seconds = Math.floor(diff/1000);
-					
-					var daySuffix = "s";
-					if(days == 1) { daySuffix = ""; }
-					var hourSuffix = "s";
-					if(hours == 1) { hourSuffix = ""; }
-					var minSuffix = "s";
-					if(minutes == 1) { minSuffix = ""; }
-					var secSuffix = "s";
-					if(seconds == 1) { secSuffix = ""; }
-					
-					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote was "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+" ago.";
+					if(d < keynoteEndDate) {
+						var diff = keynoteEndDate-d;
+						
+						//yes i know im not using days or hours it's midnight and i'm tired
+						var days = Math.floor(diff/(24*60*60*1000));
+						diff-=days*24*60*60*1000;
+						var hours = Math.floor(diff/(60*60*1000));
+						diff-=hours*60*60*1000;
+						var minutes = Math.floor(diff/(60*1000));
+						diff-=minutes*60*1000;
+						var seconds = Math.floor(diff/1000);
+						
+						var minSuffix = "s";
+						if(minutes == 1) { minSuffix = ""; }
+						var secSuffix = "s";
+						if(seconds == 1) { secSuffix = ""; }
+						
+						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is happening right now and will probably end in "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+".";
+					} else {
+						var diff = d-keynoteEndDate;
+						
+						var days = Math.floor(diff/(24*60*60*1000));
+						diff-=days*24*60*60*1000;
+						var hours = Math.floor(diff/(60*60*1000));
+						diff-=hours*60*60*1000;
+						var minutes = Math.floor(diff/(60*1000));
+						diff-=minutes*60*1000;
+						var seconds = Math.floor(diff/1000);
+						
+						var daySuffix = "s";
+						if(days == 1) { daySuffix = ""; }
+						var hourSuffix = "s";
+						if(hours == 1) { hourSuffix = ""; }
+						var minSuffix = "s";
+						if(minutes == 1) { minSuffix = ""; }
+						var secSuffix = "s";
+						if(seconds == 1) { secSuffix = ""; }
+						
+						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote was "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+" ago.";
+					}
 				}
 			}
 		</script>

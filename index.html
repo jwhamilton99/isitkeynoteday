@@ -6,22 +6,62 @@
 				height:100%;
 				width:100%;
 				display:flex;
+				flex-direction:column;
 				justify-content:center;
 				align-items:center;
 			}
 			
-			#keynoteDayText {
+			#keynoteDayText, #keynoteTimeLeft {
 				font-family: Arial, helvetica, sans-serif;
 			}
 		</style>
 		<script>
+			var keynoteDate = new Date("2021-06-07T17:00:00Z");
 			function loaded() {
+				checkDate();
+				setTimeout(function() {
+					timerTick();
+				}, 1000);
+			}
+			
+			function timerTick() {
+				checkDate();
+				setTimeout(function() {
+					timerTick();
+				}, 1000);
+			}
+			
+			function checkDate() {
 				var d = new Date();
-				var keynoteDate = new Date(2021,5,7);
 				
 				if(d.getFullYear() == keynoteDate.getFullYear() && d.getMonth() == keynoteDate.getMonth() && d.getDate() == keynoteDate.getDate()) {
 					document.getElementById("keynoteDayText").innerHTML = "It's keynote day!";
 					document.body.style.backgroundImage = "url(confetti.gif)";
+				}
+				if(d < keynoteDate) {
+					var diff = keynoteDate-d;
+					
+					var days = Math.floor(diff/(24*60*60*1000));
+					diff-=days*24*60*60*1000;
+					var hours = Math.floor(diff/(60*60*1000));
+					diff-=hours*60*60*1000;
+					var minutes = Math.floor(diff/(60*1000));
+					diff-=minutes*60*1000;
+					var seconds = Math.floor(diff/1000);
+					
+					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is in "+days+" days, "+hours+" hours, "+minutes+" minutes, "+seconds+" seconds.";
+				} else {
+					var diff = d-keynoteDate;
+					
+					var days = Math.floor(diff/(24*60*60*1000));
+					diff-=days*24*60*60*1000;
+					var hours = Math.floor(diff/(60*60*1000));
+					diff-=hours*60*60*1000;
+					var minutes = Math.floor(diff/(60*1000));
+					diff-=minutes*60*1000;
+					var seconds = Math.floor(diff/1000);
+					
+					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote was "+days+" days, "+hours+" hours, "+minutes+" minutes, "+seconds+" seconds ago.";
 				}
 			}
 		</script>
@@ -29,6 +69,7 @@
 	<body onload="loaded()">
 		<div id="container">
 			<h1 id="keynoteDayText">It is not keynote day.</h1>
+			<p id="keynoteTimeLeft">The keynote is in xx days, xx hours, xx minutes, xx seconds.</p>
 		</div>
 	</body>
 </html>

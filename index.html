@@ -49,7 +49,16 @@
 					diff-=minutes*60*1000;
 					var seconds = Math.floor(diff/1000);
 					
-					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is in "+days+" days, "+hours+" hours, "+minutes+" minutes, "+seconds+" seconds.";
+					var daySuffix = "s";
+					if(days == 1) { daySuffix = ""; }
+					var hourSuffix = "s";
+					if(hours == 1) { hourSuffix = ""; }
+					var minSuffix = "s";
+					if(minutes == 1) { minSuffix = ""; }
+					var secSuffix = "s";
+					if(seconds == 1) { secSuffix = ""; }
+					
+					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is in "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+".";
 				} else {
 					var diff = d-keynoteDate;
 					

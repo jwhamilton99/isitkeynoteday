@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<style>
+			#container {
+				height:100%;
+				width:100%;
+				display:flex;
+				justify-content:center;
+				align-items:center;
+			}
+			
+			#keynoteDayText {
+				font-family: Arial, helvetica, sans-serif;
+			}
+		</style>
+		<script>
+			function loaded() {
+				var d = new Date();
+				var keynoteDate = new Date(2021,5,7);
+				
+				if(d.getFullYear() == keynoteDate.getFullYear() && d.getMonth() == keynoteDate.getMonth() && d.getDate() == keynoteDate.getDate()) {
+					document.getElementById("keynoteDayText").innerHTML = "It's keynote day!";
+					document.body.style.backgroundImage = "url(confetti.gif)";
+				}
+			}
+		</script>
+	</head>
+	<body onload="loaded()">
+		<div id="container">
+			<h1 id="keynoteDayText">It is not keynote day.</h1>
+		</div>
+	</body>
+</html>

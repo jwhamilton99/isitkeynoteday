@@ -2,6 +2,14 @@
 	<head>
 		<title>is it keynote day?</title>
 		<style>
+			body {
+				margin:0;
+				--background-color: #323232;
+				--primary-color: #fffff7;
+				
+				background-color:var(--primary-color);
+			}
+			
 			#container {
 				height:100%;
 				width:100%;
@@ -9,15 +17,51 @@
 				flex-direction:column;
 				justify-content:center;
 				align-items:center;
+				text-align:center;
+				position:absolute;
+				z-index:10;
+				
+				font-size: max(min(3vw,3em), 1.5em);
+				
+			}
+			
+			#confettiOverlay {
+				position:absolute;
+				width:100%;
+				height:100%;
+				z-index:5;
+			}
+			
+			#content {
+				padding:20px;
+				border:1px solid black;
+				border-radius:20px;
+				box-shadow:0px 0px 10px rgba(0,0,0,0.5);
+				margin:20px;
+				
+				background-color:var(--background-color);
+				color: var(--primary-color);
 			}
 			
 			#keynoteDayText, #keynoteTimeLeft {
 				font-family: Arial, helvetica, sans-serif;
 			}
+			
+			@media (prefers-color-scheme:dark) {
+				body {
+					background-color:var(--background-color);
+				}
+				#content {
+					background-color:var(--primary-color);
+					color:var(--background-color);
+				}
+			}
 		</style>
 		<script>
-			var keynoteDate = new Date("2021-06-07T17:00:00Z");
-			var keynoteEndDate = new Date("2021-06-07T18:48:00Z");
+			var showDate = false
+		
+			var keynoteDate = new Date("2021-09-14T17:00:00Z");
+			var keynoteEndDate = new Date("2021-09-14T19:00:00Z");
 			function loaded() {
 				checkDate();
 				setTimeout(function() {
@@ -32,12 +76,43 @@
 				}, 1000);
 			}
 			
+			function getTimeString(date) {
+				var ampm = "AM";
+				var hour = date.getHours();
+				if(hour > 12) {
+					hour-=12;
+					ampm = "PM";
+				}
+				var minute = date.getMinutes();
+				if(minute != 0) {
+					return (hour+":"+((minute < 10) ? "0" : "")+minute+" "+ampm);
+				}
+				return (hour+" "+ampm);
+			}
+			
+			function getDateString(date) {
+				var month = date.getMonth()+1;
+				var day = date.getDate();
+				
+				var ampm = "AM";
+				var hour = date.getHours();
+				if(hour > 12) {
+					hour-=12;
+					ampm = "PM";
+				}
+				var minute = date.getMinutes();
+				if(minute != 0) {
+					return (month+"/"+day+" at "+hour+":"+((minute < 10) ? "0" : "")+minute+" "+ampm);
+				}
+				return (month+"/"+day+" at "+hour+" "+ampm);
+			}
+			
 			function checkDate() {
 				var d = new Date();
 				
 				if(d.getFullYear() == keynoteDate.getFullYear() && d.getMonth() == keynoteDate.getMonth() && d.getDate() == keynoteDate.getDate()) {
 					document.getElementById("keynoteDayText").innerHTML = "It's keynote day!";
-					document.body.style.backgroundImage = "url(confetti.gif)";
+					document.getElementById("confettiOverlay").style.backgroundImage = "url(confetti.gif)";
 				}
 				if(d < keynoteDate) {
 					var diff = keynoteDate-d;
@@ -59,10 +134,11 @@
 					var secSuffix = "s";
 					if(seconds == 1) { secSuffix = ""; }
 					
-					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is in "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+".";
+					document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is on "+getDateString(keynoteDate)+" local time,<br>or in "+((days != 0) ? days+" day"+daySuffix+", " : "")+((hours != 0) ? hours+" hour"+hourSuffix+", " : "")+((minutes != 0) ? minutes+" minute"+minSuffix+", " : "")+seconds+" second"+secSuffix+".";
 				} else {
 					if(d < keynoteEndDate) {
 						var diff = keynoteEndDate-d;
+						
 						
 						//yes i know im not using days or hours it's midnight and i'm tired
 						var days = Math.floor(diff/(24*60*60*1000));
@@ -73,12 +149,14 @@
 						diff-=minutes*60*1000;
 						var seconds = Math.floor(diff/1000);
 						
+						var hourSuffix = "s";
+						if(hours == 1) { hourSuffix = ""; }
 						var minSuffix = "s";
 						if(minutes == 1) { minSuffix = ""; }
 						var secSuffix = "s";
 						if(seconds == 1) { secSuffix = ""; }
 						
-						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote is happening right now and will probably end in "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+".";
+						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote started at "+getTimeString(keynoteDate)+" local time,<br>and will probably end in "+((hours != 0) ? hours+" hour"+hourSuffix+", " : "")+((minutes != 0) ? minutes+" minute"+minSuffix+", " : "")+seconds+" second"+secSuffix+".";
 					} else {
 						var diff = d-keynoteEndDate;
 						
@@ -99,16 +177,24 @@
 						var secSuffix = "s";
 						if(seconds == 1) { secSuffix = ""; }
 						
-						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote was "+days+" day"+daySuffix+", "+hours+" hour"+hourSuffix+", "+minutes+" minute"+minSuffix+", "+seconds+" second"+secSuffix+" ago.";
+						document.getElementById("keynoteTimeLeft").innerHTML = "The keynote ended on "+getDateString(keynoteEndDate)+",<br> or "+((days != 0) ? days+" day"+daySuffix+", " : "")+((hours != 0) ? hours+" hour"+hourSuffix+", " : "")+((minutes != 0) ? minutes+" minute"+minSuffix+", " : "")+seconds+" second"+secSuffix+" ago.";
 					}
 				}
+			}
+			
+			function toggleDate() {
+				showDate = !showDate;
+				checkDate();
 			}
 		</script>
 	</head>
 	<body onload="loaded()">
+		<div id="confettiOverlay"> </div>
 		<div id="container">
-			<h1 id="keynoteDayText">It is not keynote day.</h1>
-			<p id="keynoteTimeLeft">The keynote is in xx days, xx hours, xx minutes, xx seconds.</p>
+			<div id="content">
+				<h1 id="keynoteDayText">It is not keynote day.</h1>
+				<p id="keynoteTimeLeft" onClick="toggleDate()">The keynote is in xx days, xx hours, xx minutes, xx seconds.</p>
+			</div>
 		</div>
 	</body>
 </html>
